@@ -1,0 +1,24 @@
+.productslist_container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 55rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+}
+
+.productlistitem_container {
+  text-align: center;
+  width: 14rem;
+  height: 20rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 20px;
+  box-shadow: 1px 1px 1px 2px #dfdfdf;
+}
+
+.productlistitem_container img {
+  width: 9rem;
+}

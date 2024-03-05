@@ -1,0 +1,82 @@
+.navbar_container {
+  display: flex;
+  background-color: var(--main-color);
+}
+
+.navtabs_container {
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.logo_container {
+  height: 75px;
+}
+
+.logo {
+  height: 75px;
+  width: 75px;
+}
+
+.navtabitem_container a {
+  color: white;
+  position: relative;
+  opacity: 1;
+  font-weight: 600;
+  margin-right: 3rem;
+}
+
+.navbar_container a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.1em;
+  background-color: white;
+  transition: opacity 300ms, transform 300ms;
+  opacity: 1;
+  transform: scale(0);
+  transform-origin: center;
+}
+
+.navbar_container a:hover::after {
+  transform: scale(1);
+}
+
+.cart_container {
+  height: 75px;
+  margin-left: 1.5rem;
+}
+
+.cart {
+  margin-top: 15px;
+  width: 45px;
+  height: 45px;
+  fill: white;
+}
+
+.cart_div:hover {
+  transition: all 0.05s linear;
+  transform: scale(1.07);
+}
+
+.cart_div {
+  position: relative;
+}
+
+.cart_div .circle {
+  position: absolute;
+  top: 12px;
+  left: 32px;
+  display: inline-block;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: var(--second-color);
+}
+
+.cart_div span {
+  margin-left: 6px;
+  color: white;
+}
