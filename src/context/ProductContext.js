@@ -5,7 +5,7 @@ export const ProductContext = createContext();
 
 const initialState = {
   products: [],
-  loading: false,
+  loading: true,
   error: null
 };
 

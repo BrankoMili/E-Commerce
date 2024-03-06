@@ -9,25 +9,30 @@ import PrivacyPolicy from "./components/views/PrivacyPolicy";
 import TermsOfService from "./components/views/TermsOfService";
 import PageNotFound from "./components/views/PageNotFound";
 import ProductContextProvider from "./context/ProductContext";
+import CartContextProvider from "./context/CartContext";
 import Footer from "./components/views/Footer";
+import SingleProduct from "./components/products/SingleProduct";
 
 function App() {
   return (
     <>
       <ProductContextProvider>
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/products" element={<Products />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/contactus" element={<ContactUs />} />
-            <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-            <Route path="/termsofservice" element={<TermsOfService />} />
-            <Route path="*" element={<PageNotFound />} />
-            <Route path="/" element={<Home />} />
-          </Routes>
-          <Footer />
-        </Router>
+        <CartContextProvider>
+          <Router>
+            <Navbar />
+            <Routes>
+              <Route path="/products" element={<Products />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/contactus" element={<ContactUs />} />
+              <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+              <Route path="/termsofservice" element={<TermsOfService />} />
+              <Route path="/products/:productId" element={<SingleProduct />} />
+              <Route path="*" element={<PageNotFound />} />
+              <Route path="/" element={<Home />} />
+            </Routes>
+            <Footer />
+          </Router>
+        </CartContextProvider>
       </ProductContextProvider>
     </>
   );

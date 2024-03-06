@@ -1,4 +1,3 @@
-// import { getAllProducts } from "../../services/productService";
 import { useEffect, useContext } from "react";
 import instance from "../../utils/api";
 import { ProductContext } from "../../context/ProductContext";
@@ -24,7 +23,7 @@ const Home = () => {
       .then(res => {
         dispatch({
           type: FETCH_PRODUCTS_SUCCESS,
-          payload: res.data
+          payload: [res.data] // dispatch product data in array
         });
       })
       .catch(err => {
@@ -40,19 +39,19 @@ const Home = () => {
   if (error) return <Error error={error} />;
   return (
     <section className="home_container">
-      <h1>E-Commerce</h1>
+      <h1>eCommerce</h1>
       <h2>Most Popular Product </h2>
       <div className="most_popular_product_container">
-        <img src={products.image} alt={products.title} />
+        <img src={products[0].image} alt={products[0].title} />
         <p>
-          <b>{products.title}</b>
+          <b>{products[0].title}</b>
         </p>
-        <p>{products.description}</p>
+        <p>{products[0].description}</p>
         <p>
-          <b>${products.price}</b>
+          <b>${products[0].price}</b>
         </p>
       </div>
-      <button className="allproduct_btn" onClick={() => navigate("/products")}>
+      <button className="button_style" onClick={() => navigate("/products")}>
         Check Other Products
       </button>
     </section>

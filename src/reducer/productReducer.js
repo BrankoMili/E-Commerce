@@ -9,13 +9,15 @@ export const productReducer = (state, action) => {
     case FETCH_PRODUCTS_REQUEST:
       return {
         ...state,
-        loading: true
+        loading: true,
+        error: null
       };
     case FETCH_PRODUCTS_SUCCESS:
       return {
         ...state,
         products: action.payload,
-        loading: false
+        loading: false,
+        error: null
       };
     case FETCH_PRODUCTS_FAILURE:
       return {
