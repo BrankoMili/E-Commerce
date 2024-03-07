@@ -6,7 +6,18 @@ import { ADD_TO_CART } from "../../constants/constants";
 
 const ProductsListItem = ({ product }) => {
   const navigate = useNavigate();
-  const { dispatch } = useContext(CartContext);
+  const { cartDispatch } = useContext(CartContext);
+
+  const handleAddToCart = e => {
+    e.stopPropagation();
+    cartDispatch({
+      type: ADD_TO_CART, // ADD TO CART cartDispatch
+      payload: {
+        items: 1,
+        product: product
+      }
+    });
+  };
 
   return (
     <div
@@ -21,18 +32,7 @@ const ProductsListItem = ({ product }) => {
         <b>${product.price}</b>
       </p>
       <img src={product.image} alt="product_image" className="product_image" />
-      <div
-        className="add_item_container"
-        onClick={() => {
-          dispatch({
-            type: ADD_TO_CART, // ADD TO CART DISPATCH
-            payload: {
-              items: 1,
-              product: product
-            }
-          });
-        }}
-      >
+      <div className="add_item_container" onClick={handleAddToCart}>
         <p>Add to Cart</p>
         <Add_to_cart className="add_to_cart" />
       </div>

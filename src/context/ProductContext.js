@@ -10,10 +10,13 @@ const initialState = {
 };
 
 const ProductContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(productReducer, initialState);
+  const [productState, productDispatch] = useReducer(
+    productReducer,
+    initialState
+  );
 
   return (
-    <ProductContext.Provider value={{ state, dispatch }}>
+    <ProductContext.Provider value={{ productState, productDispatch }}>
       {children}
     </ProductContext.Provider>
   );

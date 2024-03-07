@@ -9,29 +9,32 @@ import {
 import { ProductContext } from "../../context/ProductContext";
 import Error from "../error/Error";
 import { ReactComponent as Add_to_cart } from "../../assets/add_to_cart.svg";
+import { CartContext } from "../../context/CartContext";
+import { ADD_TO_CART } from "../../constants/constants";
 
 const SingleProduct = () => {
-  const { state, dispatch } = useContext(ProductContext);
-  const { products, loading, error } = state;
+  const { productState, productDispatch } = useContext(ProductContext);
+  const { products, loading, error } = productState;
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product] = products;
+  const { cartDispatch } = useContext(CartContext);
 
   useEffect(() => {
-    dispatch({
+    productDispatch({
       type: FETCH_PRODUCTS_REQUEST
     });
     instance
       .get(`/products/${productId}`)
       .then(res => {
-        dispatch({
+        productDispatch({
           type: FETCH_PRODUCTS_SUCCESS,
-          payload: [res.data] // dispatch product data in array
+          payload: [res.data] // productDispatch product data in array
         });
       })
       .catch(err => {
         console.error("Error", err);
-        dispatch({
+        productDispatch({
           type: FETCH_PRODUCTS_FAILURE,
           payload: err
         });
@@ -48,14 +51,27 @@ const SingleProduct = () => {
         <p>
           <b>Price: ${product.price}</b>
         </p>
-        <p>Rating: {product.rating.rate}</p>
+        <p>
+          Rating: {product.rating.rate} (Reviews: {product.rating.count})
+        </p>
 
         <p className="product_desc">{product.description}</p>
         <p>
           Category: <b>{product.category}</b>
         </p>
 
-        <div className="add_item_single_item">
+        <div
+          className="add_item_single_item"
+          onClick={() => {
+            cartDispatch({
+              type: ADD_TO_CART, // ADD TO CART cartproductDispatch
+              payload: {
+                items: 1,
+                product: product
+              }
+            });
+          }}
+        >
           <p>Add to Cart</p>
           <Add_to_cart className="add_to_cart" />
         </div>

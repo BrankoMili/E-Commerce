@@ -15,26 +15,31 @@ import SingleProduct from "./components/products/SingleProduct";
 
 function App() {
   return (
-    <>
+    <div className="App">
       <ProductContextProvider>
         <CartContextProvider>
           <Router>
             <Navbar />
-            <Routes>
-              <Route path="/products" element={<Products />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/contactus" element={<ContactUs />} />
-              <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-              <Route path="/termsofservice" element={<TermsOfService />} />
-              <Route path="/products/:productId" element={<SingleProduct />} />
-              <Route path="*" element={<PageNotFound />} />
-              <Route path="/" element={<Home />} />
-            </Routes>
+            <div className="main">
+              <Routes>
+                <Route path="/products" element={<Products />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/contactus" element={<ContactUs />} />
+                <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+                <Route path="/termsofservice" element={<TermsOfService />} />
+                <Route
+                  path="/products/:productId"
+                  element={<SingleProduct />}
+                />
+                <Route path="*" element={<PageNotFound />} />
+                <Route path="/" element={<Home />} />
+              </Routes>
+            </div>
             <Footer />
           </Router>
         </CartContextProvider>
       </ProductContextProvider>
-    </>
+    </div>
   );
 }
 

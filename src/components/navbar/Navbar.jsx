@@ -3,8 +3,25 @@ import NavTabsItem from "./NavTabsItem";
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 import { ReactComponent as Cart } from "../../assets/cart.svg";
 import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { CartContext } from "../../context/CartContext";
 
 const Navbar = () => {
+  const { cartState } = useContext(CartContext);
+  const [sumItems, setSumItems] = useState(cartState.length);
+
+  const sumOfItems = () => {
+    let sum = 0;
+    cartState.forEach(item => {
+      sum += item.itemNumber;
+    });
+    return sum;
+  };
+
+  useEffect(() => {
+    setSumItems(sumOfItems());
+  }, [cartState]);
+
   return (
     <nav className="navbar_container">
       <div className="logo_container">
@@ -23,9 +40,11 @@ const Navbar = () => {
           <Link to={"/cart"}>
             <div className="cart_div">
               <Cart className="cart" />
-              <div className="circle">
-                <span>1</span>
-              </div>
+              {cartState.length > 0 && (
+                <div className="circle">
+                  <span>{sumItems}</span>
+                </div>
+              )}
             </div>
           </Link>
         </div>

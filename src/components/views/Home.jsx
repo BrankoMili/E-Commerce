@@ -10,25 +10,25 @@ import { useNavigate } from "react-router-dom";
 import Error from "../error/Error";
 
 const Home = () => {
-  const { state, dispatch } = useContext(ProductContext);
-  const { products, loading, error } = state;
+  const { productState, productDispatch } = useContext(ProductContext);
+  const { products, loading, error } = productState;
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch({
+    productDispatch({
       type: FETCH_PRODUCTS_REQUEST
     });
     instance
       .get("/products/3")
       .then(res => {
-        dispatch({
+        productDispatch({
           type: FETCH_PRODUCTS_SUCCESS,
-          payload: [res.data] // dispatch product data in array
+          payload: [res.data] // productDispatch product data in array
         });
       })
       .catch(err => {
         console.error("Error", err);
-        dispatch({
+        productDispatch({
           type: FETCH_PRODUCTS_FAILURE,
           payload: err
         });
@@ -41,7 +41,12 @@ const Home = () => {
     <section className="home_container">
       <h1>eCommerce</h1>
       <h2>Most Popular Product </h2>
-      <div className="most_popular_product_container">
+      <div
+        className="most_popular_product_container"
+        onClick={() => {
+          navigate("/products/3");
+        }}
+      >
         <img src={products[0].image} alt={products[0].title} />
         <p>
           <b>{products[0].title}</b>

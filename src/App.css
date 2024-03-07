@@ -1,3 +1,13 @@
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex-grow: 1;
+}
+
 p {
   margin: 0;
 }
@@ -34,12 +44,34 @@ p {
   font-size: 1.1rem;
 }
 
+.products_container .sort_category_container {
+  display: flex;
+  justify-content: space-between;
+  width: 55rem;
+  margin: 0 auto;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.products_container .sort_category_container select {
+  height: 30px;
+  border-radius: 10px;
+}
+
+.products_container h3 {
+  text-align: center;
+}
+
 .most_popular_product_container {
   width: 45rem;
   margin: 0 auto;
   border-radius: 35px;
   padding: 1rem;
   box-shadow: 1px 1px 1px 2px #e2e2e2;
+}
+
+.most_popular_product_container:hover {
+  cursor: pointer;
 }
 
 .most_popular_product_container img {
@@ -52,14 +84,83 @@ p {
   transform: scale(1.02);
 }
 
+.close_btn_container {
+  border: none;
+  width: fit-content;
+  height: fit-content;
+  background: none;
+}
+
+.close_btn_container:hover {
+  cursor: pointer;
+}
+
+.close_btn {
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+}
+
+/* TERMS OF SERVICE */
+.termsofservice_container {
+  width: 50rem;
+  margin: 0 auto;
+}
+
+.termsofservice_container h2 {
+  text-align: center;
+}
+
+/* PRIVACY POLICY */
+.privacypolicy_container {
+  width: 50rem;
+  margin: 0 auto;
+}
+
+.privacypolicy_container h2 {
+  text-align: center;
+}
+
+/* CONTACT US */
+.contactus_container {
+  max-width: 40rem;
+  margin: 3rem auto;
+}
+
+.contactus_container .contact_details i {
+  margin-right: 1rem;
+  color: rgb(92, 92, 92);
+  font-size: 1.3rem;
+}
+
+.contactus_container .form_container {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.contactus_container .form_container input {
+  display: block;
+  width: 15rem;
+  margin: 0.3rem 0;
+  height: 1.3rem;
+}
+
+.contactus_container .form_container textarea {
+  width: 25rem;
+  min-height: 8em;
+  max-width: 25rem;
+  max-height: 17rem;
+  min-width: 25rem;
+}
+
 /* FOOTER */
 .footer_container {
   margin-top: 1.2rem;
   background-color: var(--main-color);
   text-align: center;
   color: white;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 .footer_container p {

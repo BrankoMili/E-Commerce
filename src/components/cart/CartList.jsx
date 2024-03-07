@@ -8,8 +8,9 @@ const CartList = ({ cartProducts }) => {
           {cartProducts.map(cartProduct => {
             return (
               <CartListItem
-                cartProduct={cartProduct.product}
                 key={cartProduct.product.id}
+                cartProduct={cartProduct.product}
+                itemNumber={cartProduct.itemNumber}
               />
             );
           })}
