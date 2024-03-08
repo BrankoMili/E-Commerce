@@ -36,11 +36,14 @@ const Cart = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    setTotalPriceOrder(totalPrice);
-    setSubmitedForm(true);
-    cartDispatch({
-      type: CLEAR_CART
-    });
+
+    if (cartState.length !== 0) {
+      setTotalPriceOrder(totalPrice);
+      setSubmitedForm(true);
+      cartDispatch({
+        type: CLEAR_CART
+      });
+    }
   };
 
   const handleChange = e => {
