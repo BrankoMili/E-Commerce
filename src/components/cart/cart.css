@@ -1,7 +1,7 @@
 .shopping_cart_page {
   margin: 0 auto;
   text-align: center;
-  width: 65rem;
+  max-width: 55rem;
 }
 
 .shopping_cart_page .line {

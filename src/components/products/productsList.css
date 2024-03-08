@@ -1,7 +1,7 @@
 .productslist_container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  width: 55rem;
+  max-width: 55rem;
   margin-left: auto;
   margin-right: auto;
   margin-top: 1rem;
@@ -126,7 +126,7 @@
 }
 
 /* MOBILE VIEW */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 650px) {
   .productslist_container {
     display: block;
     width: 20rem;
