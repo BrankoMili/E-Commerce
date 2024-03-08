@@ -44,24 +44,6 @@ p {
   font-size: 1.1rem;
 }
 
-.products_container .sort_category_container {
-  display: flex;
-  justify-content: space-between;
-  width: 55rem;
-  margin: 0 auto;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-.products_container .sort_category_container select {
-  height: 30px;
-  border-radius: 10px;
-}
-
-.products_container h3 {
-  text-align: center;
-}
-
 .most_popular_product_container {
   width: 45rem;
   margin: 0 auto;
@@ -143,6 +125,8 @@ p {
   width: 15rem;
   margin: 0.3rem 0;
   height: 1.3rem;
+  border-radius: 7px;
+  border: 1px solid rgb(155, 155, 155);
 }
 
 .contactus_container .form_container textarea {
@@ -151,6 +135,8 @@ p {
   max-width: 25rem;
   max-height: 17rem;
   min-width: 25rem;
+  border-radius: 7px;
+  border: 1px solid rgb(155, 155, 155);
 }
 
 /* FOOTER */

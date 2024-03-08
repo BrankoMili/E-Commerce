@@ -29,6 +29,10 @@
   margin-bottom: 3px;
 }
 
+.title_price_remove .remove_cart_item_button {
+  width: fit-content;
+}
+
 .title_price_remove .remove_cart_item_button:hover {
   cursor: pointer;
   color: var(--second-color);

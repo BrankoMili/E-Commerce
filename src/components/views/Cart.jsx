@@ -3,6 +3,7 @@ import CartList from "../cart/CartList";
 import { CartContext } from "../../context/CartContext";
 import { useContext, useEffect, useState } from "react";
 import { CLEAR_CART } from "../../constants/constants";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cartState, cartDispatch } = useContext(CartContext);
@@ -15,6 +16,8 @@ const Cart = () => {
     postalCode: ""
   });
   const [submitedForm, setSubmitedForm] = useState(false);
+  const navigate = useNavigate();
+  const [totalPriceOrder, setTotalPriceOrder] = useState(0);
 
   const sumPrice = () => {
     setTotalPrice(0);
@@ -33,9 +36,8 @@ const Cart = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-
+    setTotalPriceOrder(totalPrice);
     setSubmitedForm(true);
-
     cartDispatch({
       type: CLEAR_CART
     });
@@ -53,26 +55,31 @@ const Cart = () => {
   return (
     <div className="shopping_cart_page">
       <h2>Shopping Cart</h2>
-      <div className="line"></div>
-      <CartList cartProducts={cartState} />
-      <div className="line"></div>
-      <div className="total_price_container">
-        <p>Total Price:</p>
-        <p>
-          <b>${totalPrice.toFixed(2)}</b>
-        </p>
-      </div>
 
-      <button
-        className="button_style"
-        onClick={() => {
-          cartDispatch({
-            type: CLEAR_CART
-          });
-        }}
-      >
-        Clear Cart
-      </button>
+      {!submitedForm && totalPrice !== 0 && (
+        <div>
+          <div className="line"></div>
+          <CartList cartProducts={cartState} />
+          <div className="line"></div>
+          <div className="total_price_container">
+            <p>Total Price:</p>
+            <p>
+              <b>${totalPrice.toFixed(2)}</b>
+            </p>
+          </div>
+
+          <button
+            className="button_style"
+            onClick={() => {
+              cartDispatch({
+                type: CLEAR_CART
+              });
+            }}
+          >
+            Clear Cart
+          </button>
+        </div>
+      )}
 
       <div className="order_container">
         {submitedForm ? (
@@ -93,21 +100,19 @@ const Cart = () => {
             <div className="input_container">
               <p>Postal Code:</p> <span>{orderInput.postalCode}</span>
             </div>
+            <div className="input_container">
+              <p>Total Price: </p>{" "}
+              <span>
+                <b>${totalPriceOrder.toFixed(2)}</b>
+              </span>
+            </div>
             <button
               className="button_style"
               onClick={() => {
-                setSubmitedForm(false);
-
-                setOrderInput({
-                  fullName: "",
-                  address: "",
-                  city: "",
-                  phone: "",
-                  postalCode: ""
-                });
+                navigate("/products");
               }}
             >
-              Back To Card
+              Go To Products
             </button>
           </div>
         ) : (

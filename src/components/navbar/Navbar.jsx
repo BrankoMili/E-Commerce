@@ -24,13 +24,13 @@ const Navbar = () => {
 
   return (
     <nav className="navbar_container">
-      <div className="logo_container">
-        <Link to={"/"}>
-          <Logo className="logo" />
-        </Link>
-      </div>
-
       <div className="navtabs_container">
+        <div className="logo_container">
+          <Link to={"/"}>
+            <Logo className="logo" />
+          </Link>
+        </div>
+
         <NavTabsItem value="Products" path="/products" />
         <NavTabsItem value="Terms Of Service" path="/termsofservice" />
         <NavTabsItem value="Privacy Policy" path="/privacypolicy" />

@@ -1,9 +1,9 @@
 .navbar_container {
-  display: flex;
   background-color: var(--main-color);
 }
 
 .navtabs_container {
+  justify-content: center;
   display: flex;
   margin: 0 auto;
   align-items: center;
@@ -11,6 +11,7 @@
 
 .logo_container {
   height: 75px;
+  margin-right: 4.5rem;
 }
 
 .logo {
