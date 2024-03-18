@@ -5,48 +5,47 @@ import {
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_SUCCESS,
   FETCH_PRODUCTS_FAILURE,
+  SEARCH_INPUT,
   SORT_BY_NAME,
   SORT_BY_PRICE_LOW_TO_HIGH,
   SORT_BY_PRICE_HIGH_TO_LOW,
   SORT_BY_RATING_LOW_TO_HIGH,
   SORT_BY_RATING_HIGH_TO_LOW,
   SET_PRODUCT_CATEGORY,
-  SHOW_ALL_ITEMS
 } from "../../constants/constants";
 import Error from "../error/Error";
 import ProductsList from "../products/ProductsList";
-import { ReactComponent as Close_btn } from "../../assets/close_btn.svg";
 
 const Products = () => {
   const { productState, productDispatch } = useContext(ProductContext);
   const { products, loading, error } = productState;
   const [sortBy, setSortBy] = useState(SORT_BY_NAME);
-  const [showCloseBtn, setShowCloseBtn] = useState(false);
   const [category, setCategory] = useState(undefined);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     productDispatch({
-      type: sortBy
+      type: sortBy,
     });
-  }, [sortBy, showCloseBtn, category]);
+  }, [sortBy, category]);
 
   useEffect(() => {
     productDispatch({
-      type: FETCH_PRODUCTS_REQUEST
+      type: FETCH_PRODUCTS_REQUEST,
     });
     instance
       .get("/products")
-      .then(res => {
+      .then((res) => {
         productDispatch({
           type: FETCH_PRODUCTS_SUCCESS,
-          payload: res.data
+          payload: res.data,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error", err);
         productDispatch({
           type: FETCH_PRODUCTS_FAILURE,
-          payload: err
+          payload: err,
         });
       });
   }, []);
@@ -55,9 +54,22 @@ const Products = () => {
   if (error) return <Error error={error} />;
   return (
     <main className="products_container">
+      <input
+        type="text"
+        placeholder="Search product name"
+        value={searchInput}
+        onChange={(e) => {
+          setSearchInput(e.target.value);
+
+          productDispatch({
+            type: SEARCH_INPUT,
+            payload: e.target.value,
+          });
+        }}
+      />
       <div className="sort_category_container">
         <select
-          onChange={e => {
+          onChange={(e) => {
             setSortBy(e.target.value);
           }}
         >
@@ -77,56 +89,23 @@ const Products = () => {
             Sort by rating high to low
           </option>
         </select>
+        <p>Sort by category </p>
+        <select
+          onChange={(e) => {
+            setCategory(e.target.value);
 
-        <div>
-          <form
-            onChange={e => {
-              setCategory(e.target.value);
-            }}
-            onClick={e => {
-              if (!showCloseBtn) {
-                setShowCloseBtn(true);
-              }
-
-              if (e.target.type === "radio") {
-                productDispatch({
-                  type: SET_PRODUCT_CATEGORY,
-                  payload: e.target.value
-                });
-              }
-            }}
-          >
-            <label>
-              <input type="radio" value="women's clothing" name="categories" />{" "}
-              Women's Clothing
-            </label>
-            <label>
-              <input type="radio" value="men's clothing" name="categories" />{" "}
-              Men's Clothing
-            </label>
-            <label>
-              <input type="radio" value="electronics" name="categories" />{" "}
-              Electronics
-            </label>
-            <label>
-              <input type="radio" value="jewelery" name="categories" /> Jewelery
-            </label>
-
-            <button
-              type="reset"
-              onClick={() => {
-                setShowCloseBtn(false);
-                productDispatch({
-                  type: SHOW_ALL_ITEMS
-                });
-                setCategory(undefined);
-              }}
-              className="close_btn_container"
-            >
-              {showCloseBtn && <Close_btn className="close_btn" />}
-            </button>
-          </form>
-        </div>
+            productDispatch({
+              type: SET_PRODUCT_CATEGORY,
+              payload: e.target.value,
+            });
+          }}
+        >
+          <option value="all_categories">All Categories</option>
+          <option value="women's clothing">Women's Clothing</option>
+          <option value="men's clothing">Men's Clothing</option>
+          <option value="electronics">Electronics</option>
+          <option value="jewelery">Jewelery</option>
+        </select>
       </div>
 
       <h3>

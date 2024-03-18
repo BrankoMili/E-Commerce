@@ -8,7 +8,6 @@ import {
   SORT_BY_RATING_HIGH_TO_LOW,
   SORT_BY_RATING_LOW_TO_HIGH,
   SET_PRODUCT_CATEGORY,
-  SHOW_ALL_ITEMS
 } from "../constants/constants";
 
 export const productReducer = (state, action) => {
@@ -17,7 +16,7 @@ export const productReducer = (state, action) => {
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
     case FETCH_PRODUCTS_SUCCESS:
       const sortedArray = action.payload.sort(function (a, b) {
@@ -35,13 +34,13 @@ export const productReducer = (state, action) => {
         products: sortedArray,
         loading: false,
         error: null,
-        productsConstant: action.payload
+        productsConstant: action.payload,
       };
     case FETCH_PRODUCTS_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.payload,
       };
 
     case SORT_BY_PRICE_LOW_TO_HIGH: {
@@ -57,7 +56,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray
+        products: sortedArray,
       };
     }
 
@@ -74,7 +73,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray
+        products: sortedArray,
       };
     }
 
@@ -91,7 +90,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray
+        products: sortedArray,
       };
     }
 
@@ -108,7 +107,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray
+        products: sortedArray,
       };
     }
 
@@ -125,26 +124,26 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray
+        products: sortedArray,
       };
     }
 
     case SET_PRODUCT_CATEGORY: {
+      if (action.payload === "all_categories") {
+        return {
+          ...state,
+          products: [...state.productsConstant],
+        };
+      }
+
       const stateProductsCopy = [...state.productsConstant];
-      const categorizedArray = stateProductsCopy.filter(product => {
+      const categorizedArray = stateProductsCopy.filter((product) => {
         return product.category === action.payload;
       });
 
       return {
         ...state,
-        products: categorizedArray
-      };
-    }
-
-    case SHOW_ALL_ITEMS: {
-      return {
-        ...state,
-        products: [...state.productsConstant]
+        products: categorizedArray,
       };
     }
 
