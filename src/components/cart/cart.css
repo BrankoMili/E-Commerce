@@ -4,6 +4,18 @@
   max-width: 55rem;
 }
 
+.shopping_cart_page .shopppigCart_image {
+  width: 20rem;
+}
+
+.shopping_cart_page .byVecteezy {
+  padding-top: 0.6rem;
+}
+
+.shopping_cart_page .byVecteezy a {
+  font-size: 10px;
+}
+
 .shopping_cart_page .line {
   background-color: var(--second-color);
   height: 2px;

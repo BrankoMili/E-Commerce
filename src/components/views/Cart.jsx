@@ -4,6 +4,7 @@ import { CartContext } from "../../context/CartContext";
 import { useContext, useEffect, useState } from "react";
 import { CLEAR_CART } from "../../constants/constants";
 import { useNavigate } from "react-router-dom";
+import shoppingCart from "../../assets/vecteezy_basket-retail-shopping-cart-blue-icon-on-abstract-cloud_19130097.jpg";
 
 const Cart = () => {
   const { cartState, cartDispatch } = useContext(CartContext);
@@ -55,6 +56,27 @@ const Cart = () => {
     });
   };
 
+  if (cartState.length === 0) {
+    return (
+      <div className="shopping_cart_page">
+        <h3>Your Shopping Cart Is Empty</h3>
+        <img src={shoppingCart} className="shopppigCart_image" />
+        <button
+          className="button_style"
+          onClick={() => {
+            navigate("/products");
+          }}
+        >
+          Back To All Products
+        </button>
+        <p className="byVecteezy">
+          <a href="https://www.vecteezy.com/free-vector/empty-cart">
+            Empty Cart Vectors by Vecteezy
+          </a>
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="shopping_cart_page">
       <h2>Shopping Cart</h2>

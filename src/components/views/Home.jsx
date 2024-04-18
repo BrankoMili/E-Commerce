@@ -1,36 +1,38 @@
 import { useEffect, useContext } from "react";
 import instance from "../../utils/api";
 import { ProductContext } from "../../context/ProductContext";
-import {
-  FETCH_PRODUCTS_REQUEST,
-  FETCH_PRODUCTS_SUCCESS,
-  FETCH_PRODUCTS_FAILURE
-} from "../../constants/constants";
 import { useNavigate } from "react-router-dom";
 import Error from "../error/Error";
 
 const Home = () => {
-  const { productState, productDispatch } = useContext(ProductContext);
-  const { products, loading, error } = productState;
+  const { productsState, setProductsState } = useContext(ProductContext);
+  const { products, loading, error } = productsState;
   const navigate = useNavigate();
 
   useEffect(() => {
-    productDispatch({
-      type: FETCH_PRODUCTS_REQUEST
+    setProductsState(prevState => {
+      return { ...prevState, loading: true, error: null };
     });
     instance
       .get("/products/3")
       .then(res => {
-        productDispatch({
-          type: FETCH_PRODUCTS_SUCCESS,
-          payload: [res.data] // productDispatch product data in array
+        setProductsState(prevState => {
+          return {
+            ...prevState,
+            products: [res.data],
+            loading: false,
+            error: null
+          };
         });
       })
       .catch(err => {
         console.error("Error", err);
-        productDispatch({
-          type: FETCH_PRODUCTS_FAILURE,
-          payload: err
+        setProductsState(prevState => {
+          return {
+            ...prevState,
+            loading: false,
+            error: err
+          };
         });
       });
   }, []);

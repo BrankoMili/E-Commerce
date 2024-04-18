@@ -1,11 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import instance from "../../utils/api";
-import {
-  FETCH_PRODUCTS_REQUEST,
-  FETCH_PRODUCTS_SUCCESS,
-  FETCH_PRODUCTS_FAILURE
-} from "../../constants/constants";
 import { ProductContext } from "../../context/ProductContext";
 import Error from "../error/Error";
 import { ReactComponent as Add_to_cart } from "../../assets/add_to_cart.svg";
@@ -13,30 +8,37 @@ import { CartContext } from "../../context/CartContext";
 import { ADD_TO_CART } from "../../constants/constants";
 
 const SingleProduct = () => {
-  const { productState, productDispatch } = useContext(ProductContext);
-  const { products, loading, error } = productState;
+  const { productsState, setProductsState } = useContext(ProductContext);
+  const { products, loading, error } = productsState;
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product] = products;
   const { cartDispatch } = useContext(CartContext);
 
   useEffect(() => {
-    productDispatch({
-      type: FETCH_PRODUCTS_REQUEST
+    setProductsState(prevState => {
+      return { ...prevState, loading: true, error: null };
     });
     instance
       .get(`/products/${productId}`)
       .then(res => {
-        productDispatch({
-          type: FETCH_PRODUCTS_SUCCESS,
-          payload: [res.data] // productDispatch product data in array
+        setProductsState(prevState => {
+          return {
+            ...prevState,
+            products: [res.data],
+            loading: false,
+            error: null
+          };
         });
       })
       .catch(err => {
         console.error("Error", err);
-        productDispatch({
-          type: FETCH_PRODUCTS_FAILURE,
-          payload: err
+        setProductsState(prevState => {
+          return {
+            ...prevState,
+            loading: false,
+            error: err
+          };
         });
       });
   }, []);

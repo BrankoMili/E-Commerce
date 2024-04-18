@@ -20,6 +20,18 @@
   box-shadow: 1px 1px 1px 2px #dfdfdf;
 }
 
+.products_container {
+  text-align: center;
+}
+
+.products_container .search_container {
+  width: 200px;
+  height: 20px;
+  border-radius: 7px;
+  border-width: 1px;
+  margin-top: 0.6rem;
+}
+
 .products_container .sort_category_container {
   display: flex;
   width: fit-content;
@@ -36,6 +48,7 @@
 
 .products_container h3 {
   text-align: center;
+  margin-top: 0.7rem;
 }
 
 .productlistitem_container:hover {

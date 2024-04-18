@@ -1,22 +1,19 @@
-import { createContext, useReducer } from "react";
-import { productReducer } from "../reducer/productReducer";
+import { createContext, useState } from "react";
 
 export const ProductContext = createContext();
 
 const initialState = {
   products: [],
+  productsConstant: [],
   loading: true,
   error: null
 };
 
 const ProductContextProvider = ({ children }) => {
-  const [productState, productDispatch] = useReducer(
-    productReducer,
-    initialState
-  );
+  const [productsState, setProductsState] = useState(initialState);
 
   return (
-    <ProductContext.Provider value={{ productState, productDispatch }}>
+    <ProductContext.Provider value={{ productsState, setProductsState }}>
       {children}
     </ProductContext.Provider>
   );

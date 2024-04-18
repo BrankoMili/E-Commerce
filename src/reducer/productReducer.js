@@ -8,6 +8,7 @@ import {
   SORT_BY_RATING_HIGH_TO_LOW,
   SORT_BY_RATING_LOW_TO_HIGH,
   SET_PRODUCT_CATEGORY,
+  SEARCH_INPUT
 } from "../constants/constants";
 
 export const productReducer = (state, action) => {
@@ -16,7 +17,7 @@ export const productReducer = (state, action) => {
       return {
         ...state,
         loading: true,
-        error: null,
+        error: null
       };
     case FETCH_PRODUCTS_SUCCESS:
       const sortedArray = action.payload.sort(function (a, b) {
@@ -34,13 +35,31 @@ export const productReducer = (state, action) => {
         products: sortedArray,
         loading: false,
         error: null,
-        productsConstant: action.payload,
+        productsConstant: action.payload
       };
     case FETCH_PRODUCTS_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload
+      };
+
+    case SEARCH_INPUT:
+      const searchedResults = state.productsConstant.filter(product => {
+        if (
+          product.category === state.category ||
+          state.category === "all_categories"
+        ) {
+          return product.title
+            .toLowerCase()
+            .includes(action.payload.toLowerCase());
+        }
+      });
+
+      return {
+        ...state,
+        products: searchedResults,
+        searchQuery: action.payload
       };
 
     case SORT_BY_PRICE_LOW_TO_HIGH: {
@@ -56,7 +75,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray,
+        products: sortedArray
       };
     }
 
@@ -73,7 +92,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray,
+        products: sortedArray
       };
     }
 
@@ -90,7 +109,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray,
+        products: sortedArray
       };
     }
 
@@ -107,7 +126,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray,
+        products: sortedArray
       };
     }
 
@@ -124,7 +143,7 @@ export const productReducer = (state, action) => {
 
       return {
         ...state,
-        products: sortedArray,
+        products: sortedArray
       };
     }
 
@@ -132,18 +151,28 @@ export const productReducer = (state, action) => {
       if (action.payload === "all_categories") {
         return {
           ...state,
-          products: [...state.productsConstant],
+          products: state.productsConstant,
+          category: action.payload
         };
       }
 
-      const stateProductsCopy = [...state.productsConstant];
-      const categorizedArray = stateProductsCopy.filter((product) => {
+      let categorizedArray = state.productsConstant.filter(product => {
         return product.category === action.payload;
       });
+
+      if (state.searchQuery) {
+        categorizedArray = categorizedArray.filter(product => {
+          return product.title
+            .toLowerCase()
+            .includes(state.searchQuery.toLowerCase());
+        });
+      }
+      console.log(state.category);
 
       return {
         ...state,
         products: categorizedArray,
+        category: action.payload
       };
     }
 
