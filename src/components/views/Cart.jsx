@@ -38,7 +38,13 @@ const Cart = () => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    if (cartState.length !== 0) {
+    if (
+      orderInput.fullName &&
+      orderInput.address &&
+      orderInput.city &&
+      orderInput.phone &&
+      orderInput.postalCode
+    ) {
       setTotalPriceOrder(totalPrice);
       setSubmitedForm(true);
       cartDispatch({
@@ -56,7 +62,8 @@ const Cart = () => {
     });
   };
 
-  if (cartState.length === 0) {
+  // IF CART IS EMPTY AND FORM IS NOT SUBMITED
+  if (cartState.length === 0 && !submitedForm) {
     return (
       <div className="shopping_cart_page">
         <h3>Your Shopping Cart Is Empty</h3>
