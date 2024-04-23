@@ -90,6 +90,7 @@
 }
 
 .order_container {
+  position: relative;
   margin-top: 1.5rem;
   padding-bottom: 1rem;
   padding-top: 0.5rem;
@@ -143,4 +144,36 @@
 
 .input_container span {
   font-weight: bold;
+}
+
+#notification_container {
+  position: absolute;
+  background-color: white;
+  border: 1px #bac4c9 solid;
+  padding: 1rem;
+  border-radius: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.text_notification_container {
+  display: inline-block;
+}
+
+#success_icon {
+  width: 2rem;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#close_notification_icon {
+  width: 17px;
+  position: absolute;
+  right: 1rem;
+  top: 0.55rem;
+}
+
+#close_notification_icon:hover {
+  cursor: pointer;
 }

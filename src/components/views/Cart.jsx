@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { CLEAR_CART } from "../../constants/constants";
 import { useNavigate } from "react-router-dom";
 import shoppingCart from "../../assets/vecteezy_basket-retail-shopping-cart-blue-icon-on-abstract-cloud_19130097.jpg";
+import errorImg from "../../assets/error.svg";
+import closeImg from "../../assets/close.svg";
 
 const Cart = () => {
   const { cartState, cartDispatch } = useContext(CartContext);
@@ -14,7 +16,8 @@ const Cart = () => {
     address: "",
     city: "",
     phone: "",
-    postalCode: ""
+    email: "",
+    postalCode: "",
   });
   const [submitedForm, setSubmitedForm] = useState(false);
   const navigate = useNavigate();
@@ -23,9 +26,9 @@ const Cart = () => {
   const sumPrice = () => {
     setTotalPrice(0);
     if (cartState.length !== 0) {
-      cartState.forEach(item => {
+      cartState.forEach((item) => {
         setTotalPrice(
-          prevPrice => prevPrice + item.product.price * item.itemNumber
+          (prevPrice) => prevPrice + item.product.price * item.itemNumber
         );
       });
     }
@@ -35,29 +38,25 @@ const Cart = () => {
     sumPrice();
   }, [cartState]);
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    const fullNameRegex = /^[a-zA-Z ]{2,30}$/;
+    const addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/;
 
-    if (
-      orderInput.fullName &&
-      orderInput.address &&
-      orderInput.city &&
-      orderInput.phone &&
-      orderInput.postalCode
-    ) {
+    if (fullNameRegex.test(orderInput.fullName)) {
       setTotalPriceOrder(totalPrice);
       setSubmitedForm(true);
       cartDispatch({
-        type: CLEAR_CART
+        type: CLEAR_CART,
       });
     }
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
 
-    setOrderInput(prevState => {
+    setOrderInput((prevState) => {
       return { ...prevState, [name]: value };
     });
   };
@@ -104,7 +103,7 @@ const Cart = () => {
             className="button_style"
             onClick={() => {
               cartDispatch({
-                type: CLEAR_CART
+                type: CLEAR_CART,
               });
             }}
           >
@@ -130,6 +129,9 @@ const Cart = () => {
               <p>Phone:</p> <span>{orderInput.phone}</span>
             </div>
             <div className="input_container">
+              <p>Email:</p> <span>{orderInput.email}</span>
+            </div>
+            <div className="input_container">
               <p>Postal Code:</p> <span>{orderInput.postalCode}</span>
             </div>
             <div className="input_container">
@@ -149,6 +151,14 @@ const Cart = () => {
           </div>
         ) : (
           <div>
+            <div id="notification_container">
+              <img src={errorImg} id="success_icon" />
+              <div class="text_notification_container">
+                <b>Invalid username</b>
+                <p>Username must have between 2 and 10 characters</p>
+              </div>
+              <img src={closeImg} id="close_notification_icon" />
+            </div>
             <h4>ADDRESS FOR SHIPPING AND BILLING</h4>
             <form className="cart_form_container" onSubmit={handleSubmit}>
               <label>
@@ -185,6 +195,15 @@ const Cart = () => {
                   onChange={handleChange}
                   name="phone"
                   value={orderInput.phone}
+                />
+              </label>
+              <label>
+                <span>Email</span>{" "}
+                <input
+                  type="email"
+                  onChange={handleChange}
+                  name="email"
+                  value={orderInput.email}
                 />
               </label>
               <label>
