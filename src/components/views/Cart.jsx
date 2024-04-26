@@ -22,6 +22,12 @@ const Cart = () => {
   const [submitedForm, setSubmitedForm] = useState(false);
   const navigate = useNavigate();
   const [totalPriceOrder, setTotalPriceOrder] = useState(0);
+  const [notification, setNotification] = useState({
+    notification_title: "",
+    notification_text: "",
+    show: false,
+  });
+  const [timer, setTimer] = useState(undefined);
 
   const sumPrice = () => {
     setTotalPrice(0);
@@ -38,18 +44,128 @@ const Cart = () => {
     sumPrice();
   }, [cartState]);
 
+  // Input Validation
+  const passedInputOrder = () => {
+    setTotalPriceOrder(totalPrice);
+    setSubmitedForm(true);
+    cartDispatch({
+      type: CLEAR_CART,
+    });
+  };
+
+  const failedInputOrder = () => {
+    setTimer(
+      setTimeout(() => {
+        setNotification((prevState) => {
+          return { ...prevState, show: false };
+        });
+        setTimer(undefined);
+      }, 2000)
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const fullNameRegex = /^[a-zA-Z ]{2,30}$/;
-    const addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/;
+    const fullNameRegex = /^[a-zA-Z ]{2,50}$/;
+    const addressRegex = /^[a-zA-Z0-9\s,.'-+]{3,50}$/;
+    const cityRegex = /^[a-zA-Z\u0080-\u024F\s\/\-\)\(\`\.\"\']+$/;
+    const phoneRegex =
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const postalRegex = /^[a-zA-Z0-9\s,.'-]{2,20}$/;
 
-    if (fullNameRegex.test(orderInput.fullName)) {
-      setTotalPriceOrder(totalPrice);
-      setSubmitedForm(true);
-      cartDispatch({
-        type: CLEAR_CART,
-      });
+    if (fullNameRegex.test(orderInput.fullName) === false) {
+      if (timer === undefined) {
+        setNotification((prevState) => {
+          return {
+            ...prevState,
+            notification_title: "Invalid full name",
+            notification_text:
+              "Number of characters must be between 2 and 50. Only alphabet is allowed",
+            show: true,
+          };
+        });
+        failedInputOrder();
+      }
+      return;
     }
+
+    if (addressRegex.test(orderInput.address) === false) {
+      if (timer === undefined) {
+        setNotification((prevState) => {
+          return {
+            ...prevState,
+            notification_title: "Invalid address",
+            notification_text: "Please insert valid address.",
+            show: true,
+          };
+        });
+        failedInputOrder();
+      }
+      return;
+    }
+
+    if (cityRegex.test(orderInput.city) === false) {
+      if (timer === undefined) {
+        setNotification((prevState) => {
+          return {
+            ...prevState,
+            notification_title: "Invalid city name",
+            notification_text: "Please insert valid city name.",
+            show: true,
+          };
+        });
+        failedInputOrder();
+      }
+      return;
+    }
+
+    if (phoneRegex.test(orderInput.phone) === false) {
+      if (timer === undefined) {
+        setNotification((prevState) => {
+          return {
+            ...prevState,
+            notification_title: "Invalid phone number",
+            notification_text: "Please insert valid phone number.",
+            show: true,
+          };
+        });
+        failedInputOrder();
+      }
+      return;
+    }
+
+    if (emailRegex.test(orderInput.email) === false) {
+      if (timer === undefined) {
+        setNotification((prevState) => {
+          return {
+            ...prevState,
+            notification_title: "Invalid email",
+            notification_text: "Please insert valid email address.",
+            show: true,
+          };
+        });
+        failedInputOrder();
+      }
+      return;
+    }
+
+    if (postalRegex.test(orderInput.postalCode) === false) {
+      if (timer === undefined) {
+        setNotification((prevState) => {
+          return {
+            ...prevState,
+            notification_title: "Invalid postal code",
+            notification_text: "Please insert valid postal code.",
+            show: true,
+          };
+        });
+        failedInputOrder();
+      }
+      return;
+    }
+
+    passedInputOrder();
   };
 
   const handleChange = (e) => {
@@ -151,14 +267,26 @@ const Cart = () => {
           </div>
         ) : (
           <div>
-            <div id="notification_container">
-              <img src={errorImg} id="success_icon" />
-              <div class="text_notification_container">
-                <b>Invalid username</b>
-                <p>Username must have between 2 and 10 characters</p>
+            {notification.show && (
+              <div id="notification_container">
+                <img src={errorImg} id="success_icon" />
+                <div className="text_notification_container">
+                  <b>{notification.notification_title}</b>
+                  <p>{notification.notification_text}</p>
+                </div>
+                <img
+                  src={closeImg}
+                  id="close_notification_icon"
+                  onClick={() => {
+                    clearTimeout(timer);
+                    setTimer(undefined);
+                    setNotification((prevState) => {
+                      return { ...prevState, show: false };
+                    });
+                  }}
+                />
               </div>
-              <img src={closeImg} id="close_notification_icon" />
-            </div>
+            )}
             <h4>ADDRESS FOR SHIPPING AND BILLING</h4>
             <form className="cart_form_container" onSubmit={handleSubmit}>
               <label>
