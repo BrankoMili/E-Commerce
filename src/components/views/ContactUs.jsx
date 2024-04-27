@@ -17,13 +17,36 @@ const ContactUs = () => {
       </div>
       <div className="form_container">
         <form action="https://formspree.io/f/mleypkvj" method="POST">
-          <input type="text" name="first_name" placeholder="First name" />
+          <input
+            type="text"
+            name="first_name"
+            placeholder="First name"
+            required
+            maxLength="30"
+          />
 
-          <input type="text" name="last_name" placeholder="Last name" />
+          <input
+            type="text"
+            name="last_name"
+            placeholder="Last name"
+            required
+            maxLength="30"
+          />
 
-          <input type="email" name="email" placeholder="email address" />
+          <input
+            type="email"
+            name="email"
+            placeholder="email address"
+            required
+            maxLength="100"
+          />
 
-          <textarea name="message" placeholder="your message"></textarea>
+          <textarea
+            name="message"
+            placeholder="your message"
+            required
+            maxLength="400"
+          ></textarea>
 
           <button type="submit" className="button_style">
             Send Message

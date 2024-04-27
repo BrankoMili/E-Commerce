@@ -17,7 +17,7 @@ const Cart = () => {
     city: "",
     phone: "",
     email: "",
-    postalCode: "",
+    postalCode: ""
   });
   const [submitedForm, setSubmitedForm] = useState(false);
   const navigate = useNavigate();
@@ -25,16 +25,16 @@ const Cart = () => {
   const [notification, setNotification] = useState({
     notification_title: "",
     notification_text: "",
-    show: false,
+    show: false
   });
   const [timer, setTimer] = useState(undefined);
 
   const sumPrice = () => {
     setTotalPrice(0);
     if (cartState.length !== 0) {
-      cartState.forEach((item) => {
+      cartState.forEach(item => {
         setTotalPrice(
-          (prevPrice) => prevPrice + item.product.price * item.itemNumber
+          prevPrice => prevPrice + item.product.price * item.itemNumber
         );
       });
     }
@@ -44,27 +44,29 @@ const Cart = () => {
     sumPrice();
   }, [cartState]);
 
-  // Input Validation
+  // Form Validation
+  // If every input field is properly fulfilled
   const passedInputOrder = () => {
     setTotalPriceOrder(totalPrice);
     setSubmitedForm(true);
     cartDispatch({
-      type: CLEAR_CART,
+      type: CLEAR_CART
     });
   };
 
+  // If any of input field is not properly fulfilled
   const failedInputOrder = () => {
     setTimer(
       setTimeout(() => {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return { ...prevState, show: false };
         });
         setTimer(undefined);
-      }, 2000)
+      }, 3000)
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     const fullNameRegex = /^[a-zA-Z ]{2,50}$/;
     const addressRegex = /^[a-zA-Z0-9\s,.'-+]{3,50}$/;
@@ -76,13 +78,13 @@ const Cart = () => {
 
     if (fullNameRegex.test(orderInput.fullName) === false) {
       if (timer === undefined) {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return {
             ...prevState,
             notification_title: "Invalid full name",
             notification_text:
               "Number of characters must be between 2 and 50. Only alphabet is allowed",
-            show: true,
+            show: true
           };
         });
         failedInputOrder();
@@ -92,12 +94,12 @@ const Cart = () => {
 
     if (addressRegex.test(orderInput.address) === false) {
       if (timer === undefined) {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return {
             ...prevState,
             notification_title: "Invalid address",
             notification_text: "Please insert valid address.",
-            show: true,
+            show: true
           };
         });
         failedInputOrder();
@@ -107,12 +109,12 @@ const Cart = () => {
 
     if (cityRegex.test(orderInput.city) === false) {
       if (timer === undefined) {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return {
             ...prevState,
             notification_title: "Invalid city name",
             notification_text: "Please insert valid city name.",
-            show: true,
+            show: true
           };
         });
         failedInputOrder();
@@ -122,12 +124,12 @@ const Cart = () => {
 
     if (phoneRegex.test(orderInput.phone) === false) {
       if (timer === undefined) {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return {
             ...prevState,
             notification_title: "Invalid phone number",
             notification_text: "Please insert valid phone number.",
-            show: true,
+            show: true
           };
         });
         failedInputOrder();
@@ -137,12 +139,12 @@ const Cart = () => {
 
     if (emailRegex.test(orderInput.email) === false) {
       if (timer === undefined) {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return {
             ...prevState,
             notification_title: "Invalid email",
             notification_text: "Please insert valid email address.",
-            show: true,
+            show: true
           };
         });
         failedInputOrder();
@@ -152,12 +154,12 @@ const Cart = () => {
 
     if (postalRegex.test(orderInput.postalCode) === false) {
       if (timer === undefined) {
-        setNotification((prevState) => {
+        setNotification(prevState => {
           return {
             ...prevState,
             notification_title: "Invalid postal code",
             notification_text: "Please insert valid postal code.",
-            show: true,
+            show: true
           };
         });
         failedInputOrder();
@@ -165,14 +167,14 @@ const Cart = () => {
       return;
     }
 
-    passedInputOrder();
+    passedInputOrder(); // If every input field is properly fulfilled
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const name = e.target.name;
     const value = e.target.value;
 
-    setOrderInput((prevState) => {
+    setOrderInput(prevState => {
       return { ...prevState, [name]: value };
     });
   };
@@ -219,7 +221,7 @@ const Cart = () => {
             className="button_style"
             onClick={() => {
               cartDispatch({
-                type: CLEAR_CART,
+                type: CLEAR_CART
               });
             }}
           >
@@ -280,7 +282,7 @@ const Cart = () => {
                   onClick={() => {
                     clearTimeout(timer);
                     setTimer(undefined);
-                    setNotification((prevState) => {
+                    setNotification(prevState => {
                       return { ...prevState, show: false };
                     });
                   }}
@@ -296,6 +298,8 @@ const Cart = () => {
                   onChange={handleChange}
                   name="fullName"
                   value={orderInput.fullName}
+                  required
+                  maxLength="50"
                 />
               </label>
               <label>
@@ -305,6 +309,8 @@ const Cart = () => {
                   onChange={handleChange}
                   name="address"
                   value={orderInput.address}
+                  required
+                  maxLength="50"
                 />
               </label>
               <label>
@@ -314,6 +320,7 @@ const Cart = () => {
                   onChange={handleChange}
                   name="city"
                   value={orderInput.city}
+                  required
                 />
               </label>
               <label>
@@ -323,6 +330,7 @@ const Cart = () => {
                   onChange={handleChange}
                   name="phone"
                   value={orderInput.phone}
+                  required
                 />
               </label>
               <label>
@@ -332,6 +340,7 @@ const Cart = () => {
                   onChange={handleChange}
                   name="email"
                   value={orderInput.email}
+                  required
                 />
               </label>
               <label>
@@ -341,6 +350,8 @@ const Cart = () => {
                   onChange={handleChange}
                   name="postalCode"
                   value={orderInput.postalCode}
+                  required
+                  maxLength="20"
                 />
               </label>
               <button className="button_style" type="submit">
