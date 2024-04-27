@@ -12,6 +12,11 @@ p {
   margin: 0;
 }
 
+h2,
+h1 {
+  color: var(--main-color);
+}
+
 .button_style {
   display: block;
   margin: 0 auto;
@@ -65,7 +70,7 @@ p {
 
 .most_popular_product_container img:hover {
   transition: all 0.2s linear;
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .close_btn_container {
@@ -87,8 +92,10 @@ p {
 
 /* TERMS OF SERVICE */
 .termsofservice_container {
-  width: 50rem;
+  max-width: 50rem;
   margin: 0 auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 .termsofservice_container h2 {
@@ -97,8 +104,10 @@ p {
 
 /* PRIVACY POLICY */
 .privacypolicy_container {
-  width: 50rem;
+  max-width: 50rem;
   margin: 0 auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 .privacypolicy_container h2 {
@@ -109,11 +118,13 @@ p {
 .contactus_container {
   max-width: 40rem;
   margin: 3rem auto;
+  padding-left: 2.5rem;
+  padding-right: 2rem;
 }
 
 .contactus_container .contact_details i {
   margin-right: 1rem;
-  color: rgb(92, 92, 92);
+  color: var(--second-color);
   font-size: 1.3rem;
 }
 
@@ -133,10 +144,10 @@ p {
 
 .contactus_container .form_container textarea {
   width: 25rem;
-  min-height: 8em;
+  min-height: 8rem;
   max-width: 25rem;
   max-height: 17rem;
-  min-width: 25rem;
+  min-width: 18rem;
   border-radius: 7px;
   border: 1px solid rgb(155, 155, 155);
 }
@@ -162,6 +173,21 @@ p {
 
 .footer_container a:hover {
   color: rgb(212, 212, 212);
+}
+
+/* PAGE NOT FOUND PAGE */
+.pagenotfound_container {
+  text-align: center;
+}
+
+.pagenotfound_container img {
+  width: 33rem;
+}
+
+.pagenotfound_container a {
+  display: block;
+  font-size: 10px;
+  margin-top: 2rem;
 }
 
 /* LOADING */

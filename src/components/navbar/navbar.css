@@ -11,7 +11,7 @@
 
 .logo_container {
   height: 75px;
-  margin-right: 4.5rem;
+  margin-right: 6rem;
 }
 
 .logo {
@@ -19,12 +19,16 @@
   width: 75px;
 }
 
+.navbar_container .navbar_buttons {
+  display: flex;
+}
+
 .navtabitem_container a {
   color: white;
   position: relative;
   opacity: 1;
   font-weight: 600;
-  margin-right: 3rem;
+  margin-right: 2.5rem;
 }
 
 .navbar_container a::after {
@@ -45,9 +49,22 @@
   transform: scale(1);
 }
 
+.navbar_container .underline_text a {
+  color: white;
+  position: relative;
+  opacity: 1;
+  font-weight: 600;
+  margin-right: 2.5rem;
+}
+
+.navbar_container .underline_text a::after {
+  transform: scale(1);
+  opacity: 1;
+}
+
 .cart_container {
   height: 75px;
-  margin-left: 1.5rem;
+  margin-left: 3.5rem;
 }
 
 .cart {
@@ -55,6 +72,7 @@
   width: 45px;
   height: 45px;
   fill: white;
+  margin-right: 1rem;
 }
 
 .cart_div:hover {
@@ -80,4 +98,54 @@
 .cart_div span {
   margin-left: 6px;
   color: white;
+}
+
+.logo_hamburger_menu {
+  display: flex;
+  position: relative;
+}
+
+.hamburger_button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-top: 0.4rem;
+  display: none;
+  margin-right: 7rem;
+  margin-left: -3rem;
+}
+
+.hamburger_menu_buttons_container {
+  display: none;
+}
+
+/* MOBILE VIEW */
+@media screen and (max-width: 700px) {
+  .hamburger_button {
+    display: block;
+  }
+
+  .navbar_container .navbar_buttons {
+    display: none;
+  }
+
+  .hamburger_menu_buttons_container {
+    display: block;
+    background-color: var(--main-color);
+    opacity: 93%;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    margin-top: 3px;
+  }
+
+  .hamburger_menu_buttons_container a {
+    color: white;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .hamburger_menu_buttons_container .underline_text a::after {
+    opacity: 0;
+  }
 }
