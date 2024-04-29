@@ -10,6 +10,10 @@
   margin-top: 1rem;
 }
 
+.categories_buttons_container {
+  display: flex;
+}
+
 .categories_buttons_container input[type="radio"] {
   display: none;
 }

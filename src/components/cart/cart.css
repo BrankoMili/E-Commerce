@@ -77,6 +77,9 @@
 
 .cart_product_number {
   margin-right: 10px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .cart_product_number button {
@@ -189,5 +192,12 @@
   .cart_list_item_container .title_price_remove p {
     font-size: 0.9rem;
     max-width: 13rem;
+  }
+}
+
+/* MOBILE VIEW SMALL SCREEN*/
+@media screen and (max-width: 500px) {
+  .cart_form_container input {
+    width: 10rem;
   }
 }
