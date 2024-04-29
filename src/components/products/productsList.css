@@ -166,6 +166,13 @@
   background-color: #c9e2ee;
 }
 
+/* TABLET VIEW */
+@media screen and (max-width: 768px) {
+  .add_item_container {
+    display: none;
+  }
+}
+
 /* MOBILE VIEW */
 @media screen and (max-width: 650px) {
   .productslist_container {
