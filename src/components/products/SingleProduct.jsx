@@ -1,93 +1,104 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useContext } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { useEffect, useContext, useState } from "react";
 import instance from "../../utils/api";
 import { ProductContext } from "../../context/ProductContext";
 import Error from "../error/Error";
-import { ReactComponent as Add_to_cart } from "../../assets/add_to_cart.svg";
 import { CartContext } from "../../context/CartContext";
 import { ADD_TO_CART } from "../../constants/constants";
 
 const SingleProduct = () => {
-  const { productsState, setProductsState } = useContext(ProductContext);
-  const { products, loading, error } = productsState;
-  const { productId } = useParams();
-  const navigate = useNavigate();
-  const [product] = products;
+  const { setProductsState } = useContext(ProductContext);
   const { cartDispatch } = useContext(CartContext);
+  const { productId } = useParams();
+
+  // Lokalno stanje za upravljanje podacima i učitavanjem
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setProductsState(prevState => {
-      return { ...prevState, loading: true, error: null };
-    });
+    // Resetuj stanje pre svakog novog dohvatanja
+    setProduct(null);
+    setLoading(true);
+    setError(null);
+
     instance
       .get(`/products/${productId}`)
       .then(res => {
-        setProductsState(prevState => {
-          return {
-            ...prevState,
-            products: [res.data],
-            loading: false,
-            error: null
-          };
-        });
+        setProduct(res.data);
       })
       .catch(err => {
-        console.error("Error", err);
-        setProductsState(prevState => {
-          return {
-            ...prevState,
-            loading: false,
-            error: err
-          };
-        });
+        console.error("Error fetching single product:", err);
+        setError(err);
+      })
+      .finally(() => {
+        setLoading(false);
+        setProductsState(prevState => ({
+          ...prevState,
+          loading: false,
+          error: null
+        }));
       });
-  }, []);
+  }, [productId, setProductsState]); // useEffect se ponovo pokreće ako se promeni ID proizvoda
+
+  const handleAddToCart = () => {
+    if (product) {
+      cartDispatch({
+        type: ADD_TO_CART,
+        payload: {
+          items: 1,
+          product: product
+        }
+      });
+    }
+  };
 
   if (loading) return <div className="loader"></div>;
   if (error) return <Error error={error} />;
+
+  if (!product) return <p>Product not found.</p>;
+
   return (
-    <>
-      <div className="single_product_container">
-        <h4>{product.title}</h4>
-        <img src={product.image} alt={product.title} />
-        <p>
-          <b>Price: ${product.price}</b>
-        </p>
-        <p>
-          Rating: {product.rating.rate} (Reviews: {product.rating.count})
-        </p>
+    <div className="single_product_page_container">
+      <div className="back_to_products_link">
+        <Link to="/products">
+          <i className="fas fa-arrow-left"></i> Back to Products
+        </Link>
+      </div>
 
-        <p className="product_desc">{product.description}</p>
-        <p>
-          Category: <b>{product.category}</b>
-        </p>
-
-        <div
-          className="add_item_single_item"
-          onClick={() => {
-            cartDispatch({
-              type: ADD_TO_CART, // ADD TO CART cartproductDispatch
-              payload: {
-                items: 1,
-                product: product
-              }
-            });
-          }}
-        >
-          <p>Add to Cart</p>
-          <Add_to_cart className="add_to_cart" />
+      <div className="product_page_layout">
+        {/* LEVA KOLONA  */}
+        <div className="product_image_column">
+          <img src={product.image} alt={product.title} />
         </div>
 
-        <button
-          className="button_style"
-          onClick={() => {
-            navigate("/products");
-          }}
-        >
-          Back To All Products
-        </button>
+        {/* DESNA KOLONA */}
+        <div className="product_details_column">
+          <span className="product_category">{product.category}</span>
+          <h1 className="product_main_title">{product.title}</h1>
+
+          <div className="product_rating">
+            <span>⭐ {product.rating.rate.toFixed(1)}</span>
+            <span className="review_count">
+              ({product.rating.count} reviews)
+            </span>
+          </div>
+
+          <p className="product_main_price">${product.price.toFixed(2)}</p>
+
+          <p className="product_main_description">{product.description}</p>
+
+          <div className="cta_section">
+            <button
+              className="button_style add_to_cart_main_btn"
+              onClick={handleAddToCart}
+            >
+              <i className="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -5,92 +5,116 @@ import { ReactComponent as Cart } from "../../assets/cart.svg";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../../context/CartContext";
+import isAuthenticated from "../../utils/auth";
 
 const Navbar = () => {
   const { cartState } = useContext(CartContext);
-  const [sumItems, setSumItems] = useState(cartState.length);
+  const [sumItems, setSumItems] = useState(0);
   const [hamburgerMenuOpen, setHamburgerMenuOpen] = useState(false);
 
   const sumOfItems = () => {
-    let sum = 0;
-    cartState.forEach(item => {
-      sum += item.itemNumber;
-    });
-    return sum;
+    return cartState.reduce((sum, item) => sum + item.itemNumber, 0);
   };
 
   useEffect(() => {
     setSumItems(sumOfItems());
   }, [cartState]);
 
+  const toggleHamburgerMenu = () => {
+    setHamburgerMenuOpen(!hamburgerMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setHamburgerMenuOpen(false);
+  };
+
   return (
     <nav className="navbar_container">
-      <div className="navtabs_container">
-        <div className="logo_hamburger_menu">
-          <div className="logo_container">
-            <Link to={"/"}>
-              <Logo className="logo" />
-            </Link>
-          </div>
+      <div className="nav_content">
+        <div className="logo_container">
+          <Link to={"/"} onClick={closeMobileMenu}>
+            <Logo className="logo" />
+          </Link>
+        </div>
 
-          <button
-            class="hamburger_button"
-            onClick={() => {
-              setHamburgerMenuOpen(!hamburgerMenuOpen);
-            }}
-          >
-            <svg
-              width="28"
-              height="24"
-              viewBox="0 0 24 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M24 4H0V0H24V4ZM24 8H0V12H24V8ZM24 16H0V20H24V16Z"
-                fill="white"
-              />
-            </svg>
+        <div className={`nav_links ${hamburgerMenuOpen ? "active" : ""}`}>
+          <NavTabsItem
+            value="Products"
+            path="/products"
+            onClick={closeMobileMenu}
+          />
+          <NavTabsItem
+            value="Terms Of Service"
+            path="/termsofservice"
+            onClick={closeMobileMenu}
+          />
+          <NavTabsItem
+            value="Privacy Policy"
+            path="/privacypolicy"
+            onClick={closeMobileMenu}
+          />
+          <NavTabsItem
+            value="Contact Us"
+            path="/contactus"
+            onClick={closeMobileMenu}
+          />
+          <button onClick={isAuthenticated} className="login_button_mobile">
+            login
           </button>
         </div>
 
-        <div className="navbar_buttons">
-          <NavTabsItem value="Products" path="/products" />
-          <NavTabsItem value="Terms Of Service" path="/termsofservice" />
-          <NavTabsItem value="Privacy Policy" path="/privacypolicy" />
-          <NavTabsItem value="Contact Us" path="/contactus" />
-        </div>
-
-        <div className="cart_container">
-          <Link to={"/cart"}>
-            <div className="cart_div">
-              <Cart className="cart" />
-              {cartState.length > 0 && (
-                <div className="circle">
-                  <span>{sumItems}</span>
-                </div>
-              )}
-            </div>
-          </Link>
+        <div className="nav_actions">
+          <button onClick={isAuthenticated} className="login_button_desktop">
+            login
+          </button>
+          <div className="cart_container">
+            <Link to={"/cart"}>
+              <div className="cart_div">
+                <Cart className="cart" />
+                {cartState.length > 0 && (
+                  <div className="cart_badge">
+                    <span>{sumItems}</span>
+                  </div>
+                )}
+              </div>
+            </Link>
+          </div>
+          <button className="hamburger_button" onClick={toggleHamburgerMenu}>
+            {hamburgerMenuOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            )}
+          </button>
         </div>
       </div>
-
-      {/* MOBILE VIEW MENU */}
-      {hamburgerMenuOpen && (
-        <div
-          className="hamburger_menu_buttons_container"
-          onClick={e => {
-            if (e.target.tagName === "A") {
-              setHamburgerMenuOpen(false);
-            }
-          }}
-        >
-          <NavTabsItem value="Products" path="/products" />
-          <NavTabsItem value="Terms Of Service" path="/termsofservice" />
-          <NavTabsItem value="Privacy Policy" path="/privacypolicy" />
-          <NavTabsItem value="Contact Us" path="/contactus" />
-        </div>
-      )}
     </nav>
   );
 };

@@ -1,4 +1,3 @@
-import { ReactComponent as Add_to_cart } from "../../assets/add_to_cart.svg";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useContext } from "react";
@@ -11,7 +10,7 @@ const ProductsListItem = ({ product }) => {
   const handleAddToCart = e => {
     e.stopPropagation();
     cartDispatch({
-      type: ADD_TO_CART, // ADD TO CART cartDispatch
+      type: ADD_TO_CART,
       payload: {
         items: 1,
         product: product
@@ -21,20 +20,21 @@ const ProductsListItem = ({ product }) => {
 
   return (
     <div
-      className="productlistitem_container"
-      onClick={() => {
-        navigate(`/products/${product.id}`);
-      }}
+      className="product_card"
+      onClick={() => navigate(`/products/${product.id}`)}
     >
-      <p>{product.title}</p>
-
-      <p className="product_price">
-        <b>${product.price}</b>
-      </p>
-      <img src={product.image} alt="product_image" className="product_image" />
-      <div className="add_item_container" onClick={handleAddToCart}>
-        <p>Add to Cart</p>
-        <Add_to_cart className="add_to_cart" />
+      <div className="card_image_container">
+        <img src={product.image} alt={product.title} className="card_image" />
+      </div>
+      <div className="card_details">
+        <span className="card_category">{product.category}</span>
+        <h4 className="card_title">{product.title}</h4>
+        <div className="card_footer">
+          <p className="card_price">${product.price.toFixed(2)}</p>
+          <button className="add_to_cart_btn" onClick={handleAddToCart}>
+            +
+          </button>
+        </div>
       </div>
     </div>
   );

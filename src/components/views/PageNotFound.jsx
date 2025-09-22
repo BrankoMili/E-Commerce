@@ -5,20 +5,28 @@ const PageNotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="pagenotfound_container">
-      <h3>Page Not Found</h3>
-      <img src={pageNotFoundImage} alt="page_not_found_image" />
-      <button
-        className="button_style"
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Go To Home Page
-      </button>
-      <a href="https://www.vecteezy.com/free-vector/404-page">
-        404 Page Vectors by Vecteezy
-      </a>
+    <div className="page_not_found_container">
+      <div className="pnf_content">
+        <img
+          className="pnf_image"
+          src={pageNotFoundImage}
+          alt="Illustration of a lost astronaut"
+        />
+        <h1 className="pnf_title">404 - Page Not Found</h1>
+        <p className="pnf_text">
+          Oops! The page you are looking for does not exist. It might have been
+          moved or deleted.
+        </p>
+        <button className="button_style" onClick={() => navigate("/")}>
+          Go To Homepage
+        </button>
+        <a
+          className="pnf_attribution"
+          href="https://www.vecteezy.com/free-vector/404-page"
+        >
+          404 Page Vectors by Vecteezy
+        </a>
+      </div>
     </div>
   );
 };

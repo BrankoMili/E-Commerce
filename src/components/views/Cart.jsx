@@ -1,15 +1,18 @@
+import emptyCartIllustration from "../../assets/vecteezy_basket-retail-shopping-cart-blue-icon-on-abstract-cloud_19130097.jpg";
+
 import "../cart/cart.css";
 import CartList from "../cart/CartList";
 import { CartContext } from "../../context/CartContext";
+import { ProductContext } from "../../context/ProductContext";
 import { useContext, useEffect, useState } from "react";
 import { CLEAR_CART } from "../../constants/constants";
-import { useNavigate } from "react-router-dom";
-import shoppingCart from "../../assets/vecteezy_basket-retail-shopping-cart-blue-icon-on-abstract-cloud_19130097.jpg";
-import errorImg from "../../assets/error.svg";
-import closeImg from "../../assets/close.svg";
+import { useNavigate, Link } from "react-router-dom";
 
 const Cart = () => {
   const { cartState, cartDispatch } = useContext(CartContext);
+  const { productsState } = useContext(ProductContext);
+  const navigate = useNavigate();
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [orderInput, setOrderInput] = useState({
     fullName: "",
@@ -20,346 +23,246 @@ const Cart = () => {
     postalCode: ""
   });
   const [submitedForm, setSubmitedForm] = useState(false);
-  const navigate = useNavigate();
-  const [totalPriceOrder, setTotalPriceOrder] = useState(0);
   const [notification, setNotification] = useState({
-    notification_title: "",
-    notification_text: "",
+    title: "",
+    text: "",
     show: false
   });
-  const [timer, setTimer] = useState(undefined);
 
-  const sumPrice = () => {
-    setTotalPrice(0);
-    if (cartState.length !== 0) {
-      cartState.forEach(item => {
-        setTotalPrice(
-          prevPrice => prevPrice + item.product.price * item.itemNumber
-        );
-      });
-    }
-  };
-
+  // Izračunavanje ukupne cene
   useEffect(() => {
-    sumPrice();
+    const newTotalPrice = cartState.reduce(
+      (sum, item) => sum + item.product.price * item.itemNumber,
+      0
+    );
+    setTotalPrice(newTotalPrice);
   }, [cartState]);
 
-  // Form Validation
-  // If every input field is properly fulfilled
-  const passedInputOrder = () => {
-    setTotalPriceOrder(totalPrice);
-    setSubmitedForm(true);
-    cartDispatch({
-      type: CLEAR_CART
-    });
-  };
-
-  // If any of input field is not properly fulfilled
-  const failedInputOrder = () => {
-    setTimer(
-      setTimeout(() => {
-        setNotification(prevState => {
-          return { ...prevState, show: false };
-        });
-        setTimer(undefined);
-      }, 3000)
-    );
-  };
-
+  // Logika za validaciju i slanje forme
   const handleSubmit = e => {
     e.preventDefault();
-    const fullNameRegex = /^[a-zA-Z ]{2,50}$/;
-    const addressRegex = /^[a-zA-Z0-9\s,.'-+]{3,50}$/;
-    const cityRegex = /^[a-zA-Z\u0080-\u024F\s\/\-\)\(\`\.\"\']+$/;
-    const phoneRegex =
-      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const postalRegex = /^[a-zA-Z0-9\s,.'-]{2,20}$/;
+    const isFormValid = Object.values(orderInput).every(
+      value => value.trim() !== ""
+    );
 
-    if (fullNameRegex.test(orderInput.fullName) === false) {
-      if (timer === undefined) {
-        setNotification(prevState => {
-          return {
-            ...prevState,
-            notification_title: "Invalid full name",
-            notification_text:
-              "Number of characters must be between 2 and 50. Only alphabet is allowed",
-            show: true
-          };
-        });
-        failedInputOrder();
-      }
+    if (!isFormValid) {
+      setNotification({
+        title: "Incomplete Form",
+        text: "Please fill out all shipping and billing details.",
+        show: true
+      });
+      setTimeout(
+        () => setNotification(prevState => ({ ...prevState, show: false })),
+        4000
+      );
       return;
     }
 
-    if (addressRegex.test(orderInput.address) === false) {
-      if (timer === undefined) {
-        setNotification(prevState => {
-          return {
-            ...prevState,
-            notification_title: "Invalid address",
-            notification_text: "Please insert valid address.",
-            show: true
-          };
-        });
-        failedInputOrder();
-      }
-      return;
-    }
-
-    if (cityRegex.test(orderInput.city) === false) {
-      if (timer === undefined) {
-        setNotification(prevState => {
-          return {
-            ...prevState,
-            notification_title: "Invalid city name",
-            notification_text: "Please insert valid city name.",
-            show: true
-          };
-        });
-        failedInputOrder();
-      }
-      return;
-    }
-
-    if (phoneRegex.test(orderInput.phone) === false) {
-      if (timer === undefined) {
-        setNotification(prevState => {
-          return {
-            ...prevState,
-            notification_title: "Invalid phone number",
-            notification_text: "Please insert valid phone number.",
-            show: true
-          };
-        });
-        failedInputOrder();
-      }
-      return;
-    }
-
-    if (emailRegex.test(orderInput.email) === false) {
-      if (timer === undefined) {
-        setNotification(prevState => {
-          return {
-            ...prevState,
-            notification_title: "Invalid email",
-            notification_text: "Please insert valid email address.",
-            show: true
-          };
-        });
-        failedInputOrder();
-      }
-      return;
-    }
-
-    if (postalRegex.test(orderInput.postalCode) === false) {
-      if (timer === undefined) {
-        setNotification(prevState => {
-          return {
-            ...prevState,
-            notification_title: "Invalid postal code",
-            notification_text: "Please insert valid postal code.",
-            show: true
-          };
-        });
-        failedInputOrder();
-      }
-      return;
-    }
-
-    passedInputOrder(); // If every input field is properly fulfilled
+    setSubmitedForm(true);
+    cartDispatch({ type: CLEAR_CART });
+    window.scrollTo(0, 0);
   };
 
   const handleChange = e => {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setOrderInput(prevState => {
-      return { ...prevState, [name]: value };
-    });
+    const { name, value } = e.target;
+    setOrderInput(prevState => ({ ...prevState, [name]: value }));
   };
 
-  // IF CART IS EMPTY AND FORM IS NOT SUBMITED
-  if (cartState.length === 0 && !submitedForm) {
+  if (submitedForm) {
     return (
-      <div className="shopping_cart_page">
-        <h3>Your Shopping Cart Is Empty</h3>
-        <img src={shoppingCart} className="shopppigCart_image" />
-        <button
-          className="button_style"
-          onClick={() => {
-            navigate("/products");
-          }}
-        >
-          Back To All Products
-        </button>
-        <p className="byVecteezy">
-          <a href="https://www.vecteezy.com/free-vector/empty-cart">
-            Empty Cart Vectors by Vecteezy
-          </a>
-        </p>
+      <div className="order_confirmation_container">
+        <div className="confirmation_card">
+          <i className="fas fa-check-circle success_icon"></i>
+          <h1>Thank You For Your Order!</h1>
+          <p>Your order has been confirmed and will be shipped shortly.</p>
+          <div className="order_summary_details">
+            <h4>Order Details:</h4>
+            <p>
+              <strong>Full Name:</strong> {orderInput.fullName}
+            </p>
+            <p>
+              <strong>Address:</strong> {orderInput.address}, {orderInput.city},{" "}
+              {orderInput.postalCode}
+            </p>
+            <p>
+              <strong>Total Price:</strong>{" "}
+              <strong>${totalPrice.toFixed(2)}</strong>
+            </p>
+          </div>
+          <button
+            className="button_style"
+            onClick={() => navigate("/products")}
+          >
+            Continue Shopping
+          </button>
+        </div>
       </div>
     );
   }
-  return (
-    <div className="shopping_cart_page">
-      <h2>Shopping Cart</h2>
 
-      {!submitedForm && totalPrice !== 0 && (
-        <div>
-          <div className="line"></div>
-          <CartList cartProducts={cartState} />
-          <div className="line"></div>
-          <div className="total_price_container">
-            <p>Total Price:</p>
-            <p>
-              <b>${totalPrice.toFixed(2)}</b>
-            </p>
-          </div>
+  if (cartState.length === 0) {
+    const recommendedProducts = productsState.productsConstant.slice(0, 4);
 
+    return (
+      <div className="empty_cart_page">
+        <div className="empty_cart_main_panel">
+          <img src={emptyCartIllustration} alt="Empty shopping cart" />
+          <h2>Your Cart is Currently Empty</h2>
+          <p>
+            Before you proceed to checkout, you must add some products to your
+            cart.
+          </p>
           <button
             className="button_style"
-            onClick={() => {
-              cartDispatch({
-                type: CLEAR_CART
-              });
-            }}
+            onClick={() => navigate("/products")}
           >
-            Clear Cart
+            Return to Shop
           </button>
         </div>
-      )}
 
-      <div className="order_container">
-        {submitedForm ? (
-          <div className="submited_form_container">
-            <h4>ORDER INFORMATION - ORDER CONFIRMED</h4>
-            <div className="input_container">
-              <p>Full Name:</p> <span>{orderInput.fullName}</span>
-            </div>
-            <div className="input_container">
-              <p>Address:</p> <span>{orderInput.address}</span>
-            </div>
-            <div className="input_container">
-              <p>City:</p> <span>{orderInput.city}</span>
-            </div>
-            <div className="input_container">
-              <p>Phone:</p> <span>{orderInput.phone}</span>
-            </div>
-            <div className="input_container">
-              <p>Email:</p> <span>{orderInput.email}</span>
-            </div>
-            <div className="input_container">
-              <p>Postal Code:</p> <span>{orderInput.postalCode}</span>
-            </div>
-            <div className="input_container">
-              <p>Total Price: </p>{" "}
-              <span>
-                <b>${totalPriceOrder.toFixed(2)}</b>
-              </span>
-            </div>
-            <button
-              className="button_style"
-              onClick={() => {
-                navigate("/products");
-              }}
-            >
-              Go To Products
-            </button>
+        {/* --- NOVI DEO SA PREPORUKAMA --- */}
+        <div className="empty_cart_recommendations">
+          <h3>You might be interested in</h3>
+          <div className="recommended_products_grid">
+            {recommendedProducts.map(product => (
+              <Link
+                to={`/products/${product.id}`}
+                key={product.id}
+                className="recommended_product_card"
+              >
+                <img src={product.image} alt={product.title} />
+                <h4>{product.title}</h4>
+                <p>${product.price.toFixed(2)}</p>
+              </Link>
+            ))}
           </div>
-        ) : (
-          <div>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. STANJE: KORPA SA PROIZVODIMA
+  return (
+    <div className="cart_page_container">
+      <div className="cart_header">
+        <h1>Your Shopping Cart</h1>
+      </div>
+      <div className="cart_layout">
+        <div className="cart_main_content">
+          <div className="cart_items_list">
+            <CartList cartProducts={cartState} />
+          </div>
+
+          <div className="checkout_form_container">
+            <h2>Shipping & Billing</h2>
             {notification.show && (
-              <div id="notification_container">
-                <img src={errorImg} id="success_icon" />
-                <div className="text_notification_container">
-                  <b>{notification.notification_title}</b>
-                  <p>{notification.notification_text}</p>
-                </div>
-                <img
-                  src={closeImg}
-                  id="close_notification_icon"
-                  onClick={() => {
-                    clearTimeout(timer);
-                    setTimer(undefined);
-                    setNotification(prevState => {
-                      return { ...prevState, show: false };
-                    });
-                  }}
-                />
+              <div className="form_notification">
+                <strong>{notification.title}:</strong> {notification.text}
               </div>
             )}
-            <h4>ADDRESS FOR SHIPPING AND BILLING</h4>
-            <form className="cart_form_container" onSubmit={handleSubmit}>
-              <label>
-                <span>Full Name</span>{" "}
+            <form
+              id="checkout-form"
+              className="checkout_form"
+              onSubmit={handleSubmit}
+            >
+              <div className="form_group">
+                <label>Full Name</label>
                 <input
                   type="text"
-                  onChange={handleChange}
                   name="fullName"
                   value={orderInput.fullName}
+                  onChange={handleChange}
                   required
-                  maxLength="50"
                 />
-              </label>
-              <label>
-                <span>Address</span>{" "}
+              </div>
+              <div className="form_group">
+                <label>Address</label>
                 <input
                   type="text"
-                  onChange={handleChange}
                   name="address"
                   value={orderInput.address}
-                  required
-                  maxLength="50"
-                />
-              </label>
-              <label>
-                <span>City</span>{" "}
-                <input
-                  type="text"
                   onChange={handleChange}
-                  name="city"
-                  value={orderInput.city}
                   required
                 />
-              </label>
-              <label>
-                <span>Phone</span>{" "}
-                <input
-                  type="text"
-                  onChange={handleChange}
-                  name="phone"
-                  value={orderInput.phone}
-                  required
-                />
-              </label>
-              <label>
-                <span>Email</span>{" "}
-                <input
-                  type="email"
-                  onChange={handleChange}
-                  name="email"
-                  value={orderInput.email}
-                  required
-                />
-              </label>
-              <label>
-                <span>Postal Code</span>{" "}
-                <input
-                  type="text"
-                  onChange={handleChange}
-                  name="postalCode"
-                  value={orderInput.postalCode}
-                  required
-                  maxLength="20"
-                />
-              </label>
-              <button className="button_style" type="submit">
-                Submit Order
-              </button>
+              </div>
+              <div className="form_row">
+                <div className="form_group">
+                  <label>City</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={orderInput.city}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form_group">
+                  <label>Postal Code</label>
+                  <input
+                    type="text"
+                    name="postalCode"
+                    value={orderInput.postalCode}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form_row">
+                <div className="form_group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={orderInput.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form_group">
+                  <label>Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={orderInput.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
             </form>
           </div>
-        )}
+        </div>
+
+        <aside className="order_summary_section">
+          <div className="summary_card">
+            <h3>Order Summary</h3>
+            <div className="summary_row">
+              <span>Subtotal</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+            <div className="summary_row">
+              <span>Shipping</span>
+              <span>FREE</span>
+            </div>
+            <div className="summary_total">
+              <span>Total</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+            <button
+              className="button_style checkout_btn"
+              type="submit"
+              form="checkout-form"
+            >
+              Submit Order
+            </button>
+            <button
+              className="clear_cart_btn"
+              onClick={() => cartDispatch({ type: CLEAR_CART })}
+            >
+              Clear Cart
+            </button>
+          </div>
+        </aside>
       </div>
     </div>
   );

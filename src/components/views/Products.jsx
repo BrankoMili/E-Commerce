@@ -22,162 +22,157 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [order, setOrder] = useState(SORT_BY_NAME);
+  const [filtersOpen, setFiltersOpen] = useState(false); // State za mobilne filtere
 
   useEffect(() => {
-    setProductsState(prevState => {
-      return { ...prevState, loading: true, error: null };
-    });
-    instance
-      .get("/products")
-      .then(res => {
-        setProductsState(prevState => {
-          return {
+    // Dohvatamo proizvode samo ako nisu već u state-u
+    if (productsConstant.length === 0) {
+      setProductsState(prevState => ({
+        ...prevState,
+        loading: true,
+        error: null
+      }));
+      instance
+        .get("/products")
+        .then(res => {
+          setProductsState(prevState => ({
             ...prevState,
             products: changeSortItemsBy(SORT_BY_NAME, res.data),
             productsConstant: res.data,
             loading: false,
             error: null
-          };
-        });
-      })
-      .catch(err => {
-        console.error("Error", err);
-        setProductsState(prevState => {
-          return {
+          }));
+        })
+        .catch(err => {
+          console.error("Error", err);
+          setProductsState(prevState => ({
             ...prevState,
             loading: false,
             error: err
-          };
+          }));
         });
-      });
-  }, []);
+    }
+  }, [productsConstant, setProductsState]);
 
   const onChangeCategory = e => {
-    setProductsState(prevState => {
-      return {
-        ...prevState,
-        products: changeCategory(
-          e.target.value,
-          productsConstant,
-          searchQuery,
-          order
-        )
-      };
-    });
-
-    setCategory(e.target.value);
+    const newCategory = e.target.value;
+    setProductsState(prevState => ({
+      ...prevState,
+      products: changeCategory(
+        newCategory,
+        productsConstant,
+        searchQuery,
+        order
+      )
+    }));
+    setCategory(newCategory);
   };
 
-  if (loading) return <div className="loader"></div>;
+  const categories = [
+    "All Categories",
+    "women's clothing",
+    "men's clothing",
+    "jewelery",
+    "electronics"
+  ];
+
+  if (loading && productsConstant.length === 0)
+    return <div className="loader"></div>;
   if (error) return <Error error={error} />;
+
   return (
-    <main className="products_container">
-      <div className="sort_category_container">
-        <div className="categories_buttons_container">
-          <input
-            type="radio"
-            value="All Categories"
-            id="All Categories"
-            name="categories"
-            onChange={onChangeCategory}
-            defaultChecked
-          />
-          <label htmlFor="All Categories">All Categories</label>
-
-          <input
-            type="radio"
-            value="women's clothing"
-            id="women's clothing"
-            name="categories"
-            onChange={onChangeCategory}
-          />
-          <label htmlFor="women's clothing">Women's Clothing</label>
-
-          <input
-            type="radio"
-            value="men's clothing"
-            id="men's clothing"
-            name="categories"
-            onChange={onChangeCategory}
-          />
-          <label htmlFor="men's clothing">Men's Clothing</label>
-
-          <input
-            type="radio"
-            value="jewelery"
-            id="jewelery"
-            name="categories"
-            onChange={onChangeCategory}
-          />
-          <label htmlFor="jewelery">Jewelery</label>
-
-          <input
-            type="radio"
-            value="electronics"
-            id="electronics"
-            name="categories"
-            onChange={onChangeCategory}
-          />
-          <label htmlFor="electronics">Electronics</label>
+    <div className="products_page_container">
+      {/* SIDEBAR SA FILTERIMA */}
+      <aside className={`filters_sidebar ${filtersOpen ? "active" : ""}`}>
+        <div className="filters_header">
+          <h3>Filters</h3>
+          <button
+            className="close_filters_btn"
+            onClick={() => setFiltersOpen(false)}
+          >
+            &times;
+          </button>
         </div>
 
-        <div className="sort_by_container">
-          <select
+        <h4>Category</h4>
+        <div className="categories_container">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={`category_button ${category === cat ? "active" : ""}`}
+              value={cat}
+              onClick={onChangeCategory}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      {/* GLAVNI DEO SA PROIZVODIMA */}
+      <main className="products_main_content">
+        <div className="toolbar">
+          <button
+            className="mobile_filters_btn"
+            onClick={() => setFiltersOpen(true)}
+          >
+            <i className="fas fa-filter"></i> Filters
+          </button>
+
+          <input
+            type="text"
+            placeholder="Search Products..."
+            className="search_input"
             onChange={e => {
-              setProductsState(prevState => {
-                return {
-                  ...prevState,
-                  products: changeSortItemsBy(e.target.value, products)
-                };
-              });
+              setSearchQuery(e.target.value);
+              setProductsState(prevState => ({
+                ...prevState,
+                products: searchProducts(
+                  e.target.value,
+                  productsConstant,
+                  category
+                )
+              }));
+            }}
+          />
+
+          <select
+            className="sort_select"
+            onChange={e => {
               setOrder(e.target.value);
+              setProductsState(prevState => ({
+                ...prevState,
+                products: changeSortItemsBy(e.target.value, products)
+              }));
             }}
           >
-            <option value={SORT_BY_NAME} defaultValue>
-              Sort by name ascending
-            </option>
+            <option value={SORT_BY_NAME}>Name</option>
             <option value={SORT_BY_PRICE_LOW_TO_HIGH}>
-              Sort by price low to high
+              Price: Low to High
             </option>
             <option value={SORT_BY_PRICE_HIGH_TO_LOW}>
-              Sort by price high to low
-            </option>
-            <option value={SORT_BY_RATING_LOW_TO_HIGH}>
-              Sort by rating low to high
+              Price: High to Low
             </option>
             <option value={SORT_BY_RATING_HIGH_TO_LOW}>
-              Sort by rating high to low
+              Rating: High to Low
+            </option>
+            <option value={SORT_BY_RATING_LOW_TO_HIGH}>
+              Rating: Low to High
             </option>
           </select>
         </div>
-      </div>
-      <input
-        type="text"
-        placeholder="Search Products"
-        className="search_container"
-        onChange={e => {
-          setSearchQuery(e.target.value);
-          setProductsState(prevState => {
-            return {
-              ...prevState,
-              products: searchProducts(
-                e.target.value,
-                productsConstant,
-                category
-              )
-            };
-          });
-        }}
-      />
 
-      <h3>
-        {category.replace(/(^\w{1})|(\s+\w{1})/g, letter =>
-          letter.toUpperCase()
+        <h2 className="current_category_title">{category}</h2>
+
+        {products.length > 0 ? (
+          <ProductsList products={products} />
+        ) : (
+          <p className="no_products_found">
+            No products found matching your criteria.
+          </p>
         )}
-      </h3>
-
-      <ProductsList products={products} />
-    </main>
+      </main>
+    </div>
   );
 };
 
