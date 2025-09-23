@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-const NavTabsItem = ({ value, path }) => {
+const NavTabsItem = ({ value, path, onClick }) => {
   const location = useLocation();
 
   return (
     <div
+      onClick={onClick}
       className={
         location.pathname.includes(
           `/${value.toLowerCase().replaceAll(" ", "")}`
